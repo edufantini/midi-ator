@@ -23,8 +23,9 @@ def readFile(file, tr=7):
             tpb/4,
             tpb/8]
 
+
     events  = []
-    seq  = []
+    cods  = []
     l_cod  = []
     time  = []
     oct  = []
@@ -46,6 +47,9 @@ def readFile(file, tr=7):
         if msg.type == 'time_signature':
             time_signature = (msg.numerator, msg.denominator)
 
+        if msg.type == 'key_signature':
+            key_signature = msg.key
+
         if msg.type == 'set_tempo':
             tempo = tempo2bpm(msg.tempo)
 
@@ -58,7 +62,7 @@ def readFile(file, tr=7):
                 time.append(time[-1] + msg.time)
 
             events.append(True)
-            seq.append(msg.note)
+            cods.append(msg.note)
             oct.append(int(msg.note/12))
 
 
@@ -74,15 +78,15 @@ def readFile(file, tr=7):
                 time.append(time[-1] + msg.time)
 
             events.append(False)
-            seq.append(msg.note)
+            cods.append(msg.note)
             oct.append(int(msg.note/12))
 
 
             pass
 
-    l_cod = list(dict.fromkeys(seq))
+    l_cod = list(dict.fromkeys(cods))
 
-    return events, seq, oct, time, l_cod, durs, time_signature, instrument
+    return [instrument, key_signature, time_signature, tempo, l_cod, durs], [events, cods, oct, time]
     # print(events) # sequencia de on/off de todas notas da faixa
     # print(seq) # sequencia de todas notas da faixa
     # print(oct) # sequencia de todas oitavas

@@ -1,8 +1,38 @@
 import MIDIplayer as mp
 import matplotlib.pyplot as plt
 import numpy as np
+from plot import print_graph
+from bar_format import bar_split
 
-events, seq, oct, time, l_cod, durs, time_signature, instrument = mp.readFile('input.mid')
+def print_data(data):
+    for i in range(len(data)):
+        input('Data[{}]'.format(i))
+        print(data[i])
+
+#
+#   Input
+#
+info, data = mp.readFile('input.mid')
+
+# info
+name_inst   = info[0]
+key_sign    = info[1]
+time_sign   = info[2]
+tempo       = info[3]
+l_cod       = info[4]
+durs        = info[5]
+
+#data
+events      = data[0]
+cods        = data[1]
+oct         = data[2]
+time        = data[3]
+
+
+#
+# SETUP #
+#=======#
+#
 
 n_frames = len(events)
 on_frames = []
@@ -12,19 +42,12 @@ for i, e in enumerate(events):
         on_frames.append(i)
     else:
         off_frames.append(i)
+data.append(on_frames)
+data.append(off_frames)
+# print(time) # 4: ON, 5: OFF
+bars = bar_split(data, durs)
 
+# print_data(bars)
 
-# plt.plot(time, seq, 'ro')
-# print([print(x) for x in e])
-# plt.plot(on_frames, seq.difference(off_frames), 'bo')
-
-fig, ax = plt.subplots()
-scatter = ax.scatter(time, seq, c=events)
-
-# produce a legend with the unique colors from the scatter
-legend1 = ax.legend(*scatter.legend_elements(),
-                    loc="best", title="Evento")
-
-plt.show()
-
-# print(data)
+# grafico
+print_graph(time, cods, events)
